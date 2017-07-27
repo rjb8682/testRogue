@@ -52,7 +52,9 @@ def main():
         'violet': (127, 0, 255),
         'yellow': (255, 255, 0),
         'blue': (0, 0, 255),
-        'green': (0, 255, 0)
+        'green': (0, 255, 0),
+        'light_cyan':  (114, 255, 255),
+        'light_pink': (255, 114, 184)
     }
 
     fighter_component = Fighter(hp=30, defense=2, power=5)
@@ -154,7 +156,7 @@ def main():
             item = player.inventory.items[inventory_index]
 
             if game_state == GameStates.SHOW_INVENTORY:
-                player_turn_results.extend(player.inventory.use(item, colors))
+                player_turn_results.extend(player.inventory.use(item, colors, entities=entities, game_map=game_map))
             elif game_state == GameStates.DROP_INVENTORY:
                 player_turn_results.extend(player.inventory.drop_item(item, colors))
 

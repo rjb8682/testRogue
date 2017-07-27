@@ -5,7 +5,7 @@ from components.ai import BasicMonster
 from components.fighter import Fighter
 from components.item import Item
 from render_functions import RenderOrder
-from item_functions import heal
+from item_functions import cast_lightning, heal
 
 class GameMap(Map):
     def __init__(self, width, height):
@@ -71,8 +71,14 @@ def place_entities(room, entities, max_monsters_per_room, max_items_per_room, co
         y = randint(room.y1 + 1, room.y2 - 1)
 
         if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-            item_component = Item(use_function=heal, amount=4)
-            item = Entity(x, y, '!', colors.get('violet'), 'Healing Potion', render_order=RenderOrder.ITEM, item=item_component)
+            item_chance = randint(0, 100)
+
+            if item_component < 70:
+                item_component = Item(use_function=heal, amount=4)
+                item = Entity(x, y, '!', colors.get('violet'), 'Healing Potion', render_order=RenderOrder.ITEM, item=item_component)
+            else:
+                item_component = Item(use_function=cast_lightning, damage=20, maximum_range=5)
+                item = Entity(x, y, '#', colors.get('yellow'), 'Lightning Scroll', render_order=RenderOrder.ITEM, item=item_component)
 
             entities.append(item)
 
