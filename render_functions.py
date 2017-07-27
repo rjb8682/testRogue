@@ -54,8 +54,13 @@ def render_all(con, panel, entities, player, game_map, fov_recompute, root_conso
 
     root_console.blit(con, 0, 0, screen_width, screen_height, 0, 0)
 
-    if game_state == GameStates.SHOW_INVENTORY:
-        inventory_menu(con, root_console, 'Press the key next to an item to use it, or Esc to cancel.\n', player.inventory, 50, screen_width, screen_height)
+    if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
+        if game_state == GameStates.SHOW_INVENTORY:
+            inventory_title = 'Press the key next to an item to use it, or Esc to cancel.\n'
+        else:
+            inventory_title = 'Press the key next to an item to drop it, or Esc to cancel.\n'
+
+        inventory_menu(con, root_console, inventory_title, player.inventory, 50, screen_width, screen_height)
 
     panel.clear(fg=colors.get('white'), bg=colors.get('black'))
 
