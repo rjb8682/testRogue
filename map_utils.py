@@ -5,7 +5,8 @@ from components.ai import BasicMonster
 from components.fighter import Fighter
 from components.item import Item
 from render_functions import RenderOrder
-from item_functions import cast_lightning, heal
+from item_functions import cast_lightning, cast_fireball, heal
+from game_messages import Message
 
 class GameMap(Map):
     def __init__(self, width, height):
@@ -76,6 +77,10 @@ def place_entities(room, entities, max_monsters_per_room, max_items_per_room, co
             if item_component < 70:
                 item_component = Item(use_function=heal, amount=4)
                 item = Entity(x, y, '!', colors.get('violet'), 'Healing Potion', render_order=RenderOrder.ITEM, item=item_component)
+            elif item_chance < 85:
+                item_component = Item(use_function=cast_fireball, targeting=True,
+                                      targeting_message=Message('Left-click a target tile for the fireball, or right-click to cancel.', colors.get('light_cyan')), damage=12, radius=3)
+                item = Entity(x, y, '#', colors.get('red'), 'Fireball Scroll', render_order=RenderOrder.ITEM, item=item_component)
             else:
                 item_component = Item(use_function=cast_lightning, damage=20, maximum_range=5)
                 item = Entity(x, y, '#', colors.get('yellow'), 'Lightning Scroll', render_order=RenderOrder.ITEM, item=item_component)
