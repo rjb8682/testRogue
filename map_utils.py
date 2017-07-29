@@ -5,7 +5,7 @@ from components.ai import BasicMonster
 from components.fighter import Fighter
 from components.item import Item
 from render_functions import RenderOrder
-from item_functions import cast_lightning, cast_fireball, heal
+from item_functions import cast_confuse, cast_lightning, cast_fireball, heal
 from game_messages import Message
 
 class GameMap(Map):
@@ -30,7 +30,7 @@ class Rect:
                 self.y1 <= other.y2 and self.y2 >= other.y1)
 
 def create_room(game_map, room):
-    for x in range(room.y1 + 1, room.x2):
+    for x in range(room.x1 + 1, room.x2):
         for y in range(room.y1 + 1, room.y2):
             game_map.walkable[x, y] = True
             game_map.transparent[x, y] = True
@@ -45,7 +45,7 @@ def create_v_tunnel(game_map, y1, y2, x):
         game_map.walkable[x, y] = True
         game_map.transparent[x, y] = True
 
-def place_entities(room, entities, max_monsters_per_room, max_items_per_room, colors):
+def place_entities(game_map, room, entities, max_monsters_per_room, max_items_per_room, colors):
     number_of_monsters = randint(0, max_monsters_per_room)
     number_of_items = randint(0, max_items_per_room)
 
@@ -71,16 +71,20 @@ def place_entities(room, entities, max_monsters_per_room, max_items_per_room, co
         x = randint(room.x1 + 1, room.x2 - 1)
         y = randint(room.y1 + 1, room.y2 - 1)
 
-        if not any([entity for entity in entities if entity.x == x and entity.y == y]):
+        if not any([entity for entity in entities if entity.x == x and entity.y == y]) and game_map.walkable[x, y]:
             item_chance = randint(0, 100)
 
-            if item_component < 70:
+            if item_chance < 70:
                 item_component = Item(use_function=heal, amount=4)
                 item = Entity(x, y, '!', colors.get('violet'), 'Healing Potion', render_order=RenderOrder.ITEM, item=item_component)
-            elif item_chance < 85:
+            elif item_chance < 80:
                 item_component = Item(use_function=cast_fireball, targeting=True,
                                       targeting_message=Message('Left-click a target tile for the fireball, or right-click to cancel.', colors.get('light_cyan')), damage=12, radius=3)
                 item = Entity(x, y, '#', colors.get('red'), 'Fireball Scroll', render_order=RenderOrder.ITEM, item=item_component)
+            elif item_chance < 90:
+                item_component = Item(use_function=cast_confuse, targeting=True,
+                                      targeting_message=Message('Left-click an enemy to confuse it, or right-click to cancel.', colors.get('light_cyan')))
+                item = Entity(x, y, '#', colors.get('light_pink'), 'Confusion Scroll', render_order=RenderOrder.ITEM, item=item_component)
             else:
                 item_component = Item(use_function=cast_lightning, damage=20, maximum_range=5)
                 item = Entity(x, y, '#', colors.get('yellow'), 'Lightning Scroll', render_order=RenderOrder.ITEM, item=item_component)
@@ -122,7 +126,7 @@ def make_map(game_map, max_rooms, room_min_size, room_max_size, map_width, map_h
                     create_v_tunnel(game_map, prev_y, new_y, prev_x)
                     create_h_tunnel(game_map, prev_x, new_x, new_y)
 
-            place_entities(new_room, entities, max_monsters_per_room, max_items_per_room, colors)
+            place_entities(game_map, new_room, entities, max_monsters_per_room, max_items_per_room, colors)
 
             rooms.append(new_room)
             num_rooms += 1

@@ -177,12 +177,14 @@ def main():
                 item_use_results = player.inventory.use(targeting_item, colors, entities=entities, game_map=game_map,
                                                         target_x=target_x, target_y=target_y)
                 player_turn_results.extend(item_use_results)
-            elif right_Click:
+            elif right_click:
                 player_turn_results.append({'targeting_cancelled': True})
 
         if exit:
             if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
                 game_state = previous_game_state
+            elif game_state == GameStates.TARGETING:
+                player_turn_results.append({'targeting_cancelled': True})
             else:
                 return True
 
