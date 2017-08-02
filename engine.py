@@ -1,23 +1,19 @@
-from input_handlers import handle_keys, handle_mouse
+from input_handlers import handle_keys, handle_mouse, handle_main_menu
 from render_functions import clear_all, render_all
 from entity import get_blocking_entities_at_location
 from game_states import GameStates
 from death_functions import kill_monster, kill_player
 from game_messages import Message
 from loader_functions.initialize_new_game import get_constants, get_game_variables
+from loader_functions.json_loaders import load_game, save_game
+from menus import main_menu, message_box
+from tcod import image_load
 import tdl
 
-def main():
-    constants = get_constants()
-
+def play_game(player, entities, game_map, message_log, game_state, root_console, con, panel, constants):
     tdl.set_font('arial10x10.png', greyscale=True, altLayout=True)
-    root_console = tdl.init(constants['screen_width'], constants['screen_height'], constants['window_title'])
-    con = tdl.Console(constants['screen_width'], constants['screen_height'])
-    panel = tdl.Console(constants['screen_width'], constants['panel_height'])
 
     fov_recompute = True
-
-    player, entities, game_map, message_log, game_state = get_game_variables(constants)
 
     mouse_coordinates = (0, 0)
 
@@ -27,11 +23,13 @@ def main():
 
     while not tdl.event.is_window_closed():
         if fov_recompute:
-            game_map.compute_fov(player.x, player.y, fov=constants['fov_algorithm'], radius=constants['fov_radius'], light_walls=constants['fov_light_walls'])
+            game_map.compute_fov(player.x, player.y, fov=constants['fov_algorithm'], radius=constants['fov_radius'],
+                                 light_walls=constants['fov_light_walls'])
 
-        render_all(con, panel, entities, player, game_map, fov_recompute, root_console, message_log, constants['screen_width'], constants['screen_height'],
-                bar_width, constants['panel_height'], constants['panel_y'], mouse_coordinates, constants['colors'], game_state)
-
+        render_all(con, panel, entities, player, game_map, fov_recompute, root_console, message_log,
+                   constants['screen_width'], constants['screen_height'], constants['bar_width'],
+                   constants['panel_height'], constants['panel_y'], mouse_coordinates, constants['colors'],
+                   game_state)
         tdl.flush()
 
         clear_all(con, entities)
@@ -77,7 +75,7 @@ def main():
 
             if game_map.walkable[destination_x, destination_y]:
                 target = get_blocking_entities_at_location(entities, destination_x, destination_y)
-                
+
                 if target:
                     attack_results = player.fighter.attack(target)
                     player_turn_results.extend(attack_results)
@@ -87,11 +85,13 @@ def main():
                     fov_recompute = True
 
                 game_state = GameStates.ENEMY_TURN
+
         elif pickup and game_state == GameStates.PLAYERS_TURN:
             for entity in entities:
                 if entity.item and entity.x == player.x and entity.y == player.y:
                     pickup_results = player.inventory.add_item(entity, constants['colors'])
                     player_turn_results.extend(pickup_results)
+
                     break
             else:
                 message_log.add_message(Message('There is nothing here to pick up.', constants['colors'].get('yellow')))
@@ -104,11 +104,13 @@ def main():
             previous_game_state = game_state
             game_state = GameStates.DROP_INVENTORY
 
-        if inventory_index is not None and previous_game_state != GameStates.PLAYER_DEAD and inventory_index < len(player.inventory.items):
+        if inventory_index is not None and previous_game_state != GameStates.PLAYER_DEAD and inventory_index < len(
+                player.inventory.items):
             item = player.inventory.items[inventory_index]
 
             if game_state == GameStates.SHOW_INVENTORY:
-                player_turn_results.extend(player.inventory.use(item, constants['colors'], entities=entities, game_map=game_map))
+                player_turn_results.extend(player.inventory.use(item, constants['colors'], entities=entities,
+                                                                game_map=game_map))
             elif game_state == GameStates.DROP_INVENTORY:
                 player_turn_results.extend(player.inventory.drop_item(item, constants['colors']))
 
@@ -116,8 +118,8 @@ def main():
             if left_click:
                 target_x, target_y = left_click
 
-                item_use_results = player.inventory.use(targeting_item, constants['colors'], entities=entities, game_map=game_map,
-                                                        target_x=target_x, target_y=target_y)
+                item_use_results = player.inventory.use(targeting_item, constants['colors'], entities=entities,
+                                                        game_map=game_map, target_x=target_x, target_y=target_y)
                 player_turn_results.extend(item_use_results)
             elif right_click:
                 player_turn_results.append({'targeting_cancelled': True})
@@ -128,6 +130,8 @@ def main():
             elif game_state == GameStates.TARGETING:
                 player_turn_results.append({'targeting_cancelled': True})
             else:
+                save_game(player, entities, game_map, message_log, game_state)
+
                 return True
 
         if fullscreen:
@@ -145,11 +149,6 @@ def main():
             if message:
                 message_log.add_message(message)
 
-            if targeting_cancelled:
-                game_state = previous_game_state
-
-                message_log.add_message(Message('Targeting cancelled'))
-
             if dead_entity:
                 if dead_entity == player:
                     message, game_state = kill_player(dead_entity, constants['colors'])
@@ -160,6 +159,7 @@ def main():
 
             if item_added:
                 entities.remove(item_added)
+
                 game_state = GameStates.ENEMY_TURN
 
             if item_consumed:
@@ -167,6 +167,7 @@ def main():
 
             if item_dropped:
                 entities.append(item_dropped)
+
                 game_state = GameStates.ENEMY_TURN
 
             if targeting:
@@ -176,6 +177,11 @@ def main():
                 targeting_item = targeting
 
                 message_log.add_message(targeting_item.item.targeting_message)
+
+            if targeting_cancelled:
+                game_state = previous_game_state
+
+                message_log.add_message(Message('Targeting cancelled'))
 
         if game_state == GameStates.ENEMY_TURN:
             for entity in entities:
@@ -202,9 +208,76 @@ def main():
 
                     if game_state == GameStates.PLAYER_DEAD:
                         break
-
             else:
                 game_state = GameStates.PLAYERS_TURN
+
+def main():
+    constants = get_constants()
+
+    tdl.set_font('arial10x10.png', greyscale=True, altLayout=True)
+
+    root_console = tdl.init(constants['screen_width'], constants['screen_height'], constants['window_title'])
+    con = tdl.Console(constants['screen_width'], constants['screen_height'])
+    panel = tdl.Console(constants['screen_width'], constants['panel_height'])
+
+    player = None
+    entities = []
+    game_map = None
+    message_log = None
+    game_state = None
+
+    show_main_menu = True
+    show_load_error_message = False
+
+    main_menu_background_image = image_load('menu_background.png')
+
+    while not tdl.event.is_window_closed():
+        for event in tdl.event.get():
+            if event.type == 'KEYDOWN':
+                user_input = event
+                break
+        else:
+            user_input = None
+
+        if show_main_menu:
+            main_menu(con, root_console, main_menu_background_image, constants['screen_width'],
+                      constants['screen_height'], constants['colors'])
+
+            if show_load_error_message:
+                message_box(con, root_console, 'No save game to load', 50, constants['screen_width'],
+                            constants['screen_height'])
+
+            tdl.flush()
+
+            action = handle_main_menu(user_input)
+
+            new_game = action.get('new_game')
+            load_saved_game = action.get('load_game')
+            exit_game = action.get('exit')
+
+            if show_load_error_message and (new_game or load_saved_game or exit_game):
+                show_load_error_message = False
+            elif new_game:
+                player, entities, game_map, message_log, game_state = get_game_variables(constants)
+                game_state = GameStates.PLAYERS_TURN
+
+                show_main_menu = False
+            elif load_saved_game:
+                try:
+                    player, entities, game_map, message_log, game_state = load_game()
+                    show_main_menu = False
+                except FileNotFoundError:
+                    show_load_error_message = True
+            elif exit_game:
+                break
+
+        else:
+            root_console.clear()
+            con.clear()
+            panel.clear()
+            play_game(player, entities, game_map, message_log, game_state, root_console, con, panel, constants)
+
+            show_main_menu = True
 
 if __name__ == '__main__':
     main()
