@@ -1,5 +1,7 @@
 # User-Specific
 *.swp
+*.dat
+*.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
