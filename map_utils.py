@@ -59,22 +59,22 @@ def place_entities(game_map, room, entities, max_monsters_per_room, max_items_pe
             monster_chance = randint(0, 100)
 
             if monster_chance < 80:
-                fighter_component = Fighter(hp=10, defense=0, power=3)
+                fighter_component = Fighter(hp=10, defense=0, power=3, xp=35)
                 ai_component = BasicMonster()
 
                 monster = Entity(x, y, 'o', colors.get('bright_green'), 'Orc', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
             elif monster_chance < 90:
-                fighter_component = Fighter(hp=16, defense=1, power=4)
+                fighter_component = Fighter(hp=16, defense=1, power=4, xp=100)
                 ai_component = BasicMonster()
 
                 monster = Entity(x, y, 'T', colors.get('bright_red'), 'Troll', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
             elif monster_chance < 95:
-                fighter_component = Fighter(hp=7, defense=1, power=6)
+                fighter_component = Fighter(hp=7, defense=1, power=6, xp=130)
                 ai_component = BasicMonster()
 
                 monster = Entity(x, y, 'K', colors.get('light_red'), 'Kobold', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
             else:
-                fighter_component = Fighter(hp=20, defense=2, power=4)
+                fighter_component = Fighter(hp=20, defense=2, power=4, xp=150)
                 ai_component = BasicMonster()
 
                 monster = Entity(x, y, 'G', colors.get('green'), 'Golem', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
