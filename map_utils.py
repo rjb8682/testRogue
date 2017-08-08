@@ -54,16 +54,28 @@ def place_entities(game_map, room, entities, max_monsters_per_room, max_items_pe
         y = randint(room.y1 + 1, room.y2 - 1)
 
         if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-            if randint(0, 100) < 80:
+            monster_chance = randint(0, 100)
+
+            if monster_chance < 80:
                 fighter_component = Fighter(hp=10, defense=0, power=3)
                 ai_component = BasicMonster()
 
-                monster = Entity(x, y, 'o', colors.get('desaturated_green'), 'Orc', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
-            else:
+                monster = Entity(x, y, 'o', colors.get('bright_green'), 'Orc', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
+            elif monster_chance < 90:
                 fighter_component = Fighter(hp=16, defense=1, power=4)
                 ai_component = BasicMonster()
 
-                monster = Entity(x, y, 'T', colors.get('darker_green'), 'Troll', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
+                monster = Entity(x, y, 'T', colors.get('bright_red'), 'Troll', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
+            elif monster_chance < 95:
+                fighter_component = Fighter(hp=7, defense=1, power=6)
+                ai_component = BasicMonster()
+
+                monster = Entity(x, y, 'K', colors.get('light_red'), 'Kobold', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
+            else:
+                fighter_component = Fighter(hp=20, defense=2, power=4)
+                ai_component = BasicMonster()
+
+                monster = Entity(x, y, 'G', colors.get('green'), 'Golem', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
 
             entities.append(monster)
 
@@ -76,7 +88,7 @@ def place_entities(game_map, room, entities, max_monsters_per_room, max_items_pe
 
             if item_chance < 70:
                 item_component = Item(use_function=heal, amount=4)
-                item = Entity(x, y, '!', colors.get('violet'), 'Healing Potion', render_order=RenderOrder.ITEM, item=item_component)
+                item = Entity(x, y, '!', colors.get('bright_orange'), 'Healing Potion', render_order=RenderOrder.ITEM, item=item_component)
             elif item_chance < 80:
                 item_component = Item(use_function=cast_fireball, targeting=True,
                                       targeting_message=Message('Left-click a target tile for the fireball, or right-click to cancel.', colors.get('light_cyan')), damage=12, radius=3)

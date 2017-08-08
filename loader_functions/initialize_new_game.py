@@ -35,10 +35,10 @@ def get_constants():
     max_items_per_room = 2
 
     colors = {
-        'dark_wall': (0, 0, 100),
-        'dark_ground': (50, 50, 150),
-        'light_wall': (130, 110, 50),
-        'light_ground': (200, 180, 50),
+        'dark_wall': (180, 180, 180),
+        'dark_ground': (30, 30, 30),
+        'light_wall': (255, 255, 255),
+        'light_ground': (60, 60, 60),
         'desaturated_green': (63, 127, 63),
         'darker_green': (0, 127, 0),
         'dark_red': (191, 0, 0),
@@ -52,6 +52,10 @@ def get_constants():
         'yellow': (255, 255, 0),
         'blue': (0, 0, 255),
         'green': (0, 255, 0),
+        'bright_green': (83, 244, 66),
+        'bright_orange': (255, 164, 45),
+        'bright_blue': (33, 96, 255),
+        'bright_red': (255, 45, 45),
         'light_cyan':  (114, 255, 255),
         'light_pink': (255, 114, 184),
         'light_yellow': (255, 255, 114)

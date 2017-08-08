@@ -36,14 +36,14 @@ def render_all(con, panel, entities, player, game_map, fov_recompute, root_conso
 
             if game_map.fov[x, y]:
                 if wall:
-                    con.draw_char(x, y, None, fg=None, bg=colors.get('light_wall'))
+                    con.draw_char(x, y, '#', fg=colors.get('light_wall'), bg=None)
                 else:
                     con.draw_char(x, y, None, fg=None, bg=colors.get('light_ground'))
 
                 game_map.explored[x][y] = True
             elif game_map.explored[x][y]:
                 if wall:
-                    con.draw_char(x, y, None, fg=None, bg=colors.get('dark_wall'))
+                    con.draw_char(x, y, '#', fg=colors.get('dark_wall'), bg=None)
                 else:
                     con.draw_char(x, y, None, fg=None, bg=colors.get('dark_ground'))
 
@@ -70,7 +70,7 @@ def render_all(con, panel, entities, player, game_map, fov_recompute, root_conso
         y += 1
 
     render_bar(panel, 1, 1, bar_width, 'HP', player.fighter.hp, player.fighter.max_hp,
-            colors.get('light_red'), colors.get('darker_red'), colors.get('white'))
+            colors.get('red'), colors.get('darker_red'), colors.get('white'))
 
     panel.draw_str(1, 0, get_names_under_mouse(mouse_coordinates, entities, game_map))
 

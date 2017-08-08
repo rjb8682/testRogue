@@ -16,7 +16,7 @@ class Inventory:
         else:
             results.append({
                 'item_added': item,
-                'message': Message('You pick up the {}!'.format(item.name), colors.get('blue'))
+                'message': Message('You pick up the {}!'.format(item.name), colors.get('bright_blue'))
             })
 
             self.items.append(item)
