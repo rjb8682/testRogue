@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import Enum, auto
 from game_states import GameStates
 from menus import inventory_menu, level_up_menu, character_screen
 

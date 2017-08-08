@@ -57,7 +57,7 @@ def level_up_menu(con, root, header, player, menu_width, screen_width, screen_he
     menu(con, root, header, options, menu_width, screen_width, screen_height)
 
 def character_screen(root_console, player, character_screen_width, character_screen_height, screen_width, screen_height):
-    window = tsl.Console(character_screen_width, character_screen_height)
+    window = tdl.Console(character_screen_width, character_screen_height)
 
     window.draw_rect(0, 0, character_screen_width, character_screen_height, None, fg=(255, 255, 255), bg=None)
 
