@@ -9,8 +9,8 @@ from render_functions import RenderOrder
 def get_constants():
     window_title = 'Roguelike Tutorial Revised'
 
-    screen_width = 80
-    screen_height = 50
+    screen_width = 120
+    screen_height = 80
 
     bar_width = 20
     panel_height = 7
