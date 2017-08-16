@@ -4,6 +4,8 @@ from entity import Entity
 from components.ai import BasicMonster
 from components.fighter import Fighter
 from components.item import Item
+from equipment_slots import EquipmentSlots
+from components.equippable import Equippable
 from components.stairs import Stairs
 from render_functions import RenderOrder
 from item_functions import cast_confuse, cast_lightning, cast_fireball, heal
@@ -62,8 +64,11 @@ def place_entities(game_map, room, entities, colors):
         'kobold': from_dungeon_level([[20, 3], [30, 5], [50, 7]], dungeon_level),
         'golem': from_dungeon_level([[20, 5], [30, 8]], dungeon_level)
     }
+
     item_chances = {
         'healing_potion': 40,
+        'sword': from_dungeon_level([[5, 4]], dungeon_level),
+        'shield': from_dungeon_level([[15, 8]], dungeon_level),
         'lightning_scroll': from_dungeon_level([[25, 3], [35, 6]], dungeon_level),
         'fireball_scroll': from_dungeon_level([[25, 4], [35, 7]], dungeon_level),
         'confusion_scroll': from_dungeon_level([[30, 5]], dungeon_level)
@@ -109,6 +114,12 @@ def place_entities(game_map, room, entities, colors):
             if item_choice == 'healing_potion':
                 item_component = Item(use_function=heal, amount=40)
                 item = Entity(x, y, '!', colors.get('bright_orange'), 'Healing Potion', render_order=RenderOrder.ITEM, item=item_component)
+            elif item_choice == 'sword':
+                equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=3)
+                item = Entity(x, y, '/', colors.get('sky'), 'Sword', equippable=equippable_component)
+            elif item_choice == 'shield':
+                equippable_component = Equippable(EquipmentSlots.OFF_HAND, defense_bonus=1)
+                item = Entity(x, y, '[', colors.get('darker_orange'), 'Shield', equippable=equippable_component)
             elif item_choice == 'fireball_scroll':
                 item_component = Item(use_function=cast_fireball, targeting=True,
                                       targeting_message=Message('Left-click a target tile for the fireball, or right-click to cancel.', colors.get('light_cyan')), damage=25, radius=3)
@@ -176,8 +187,7 @@ def next_floor(player, message_log, dungeon_level, constants):
     game_map = GameMap(constants['map_width'], constants['map_height'], dungeon_level)
     entities = [player]
 
-    make_map(game_map, constants['max_rooms'], constants['room_min_size'], constants['room_max_size'], constants['map_width'], constants['map_height'], player,
-             entities, constants['max_monsters_per_room'], constants['max_items_per_room'], constants['colors'])
+    make_map(game_map, constants['max_rooms'], constants['room_min_size'], constants['room_max_size'], constants['map_width'], constants['map_height'], player, entities, constants['colors'])
 
     player.fighter.heal(player.fighter.max_hp // 2)
     message_log.add_message(Message('You take a moment to rest, and recover your strength.', constants['colors'].get('light_violet')))
