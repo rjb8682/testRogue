@@ -46,7 +46,7 @@ def create_h_tunnel(game_map, x1, x2, y):
         game_map.transparent[x, y] = True
 
 def create_v_tunnel(game_map, y1, y2, x):
-    for y in range(min(y1, y2), min(y1, y2) + 1):
+    for y in range(min(y1, y2), max(y1, y2) + 1):
         game_map.walkable[x, y] = True
         game_map.transparent[x, y] = True
 
