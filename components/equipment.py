@@ -64,7 +64,7 @@ class Equipment:
                 if self.off_hand:
                     results.append({'dequipped': self.off_hand})
 
-                seld.off_hand = equippable_entity
+                self.off_hand = equippable_entity
                 results.append({'equipped': equippable_entity})
 
         return results

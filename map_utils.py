@@ -68,7 +68,7 @@ def place_entities(game_map, room, entities, colors):
     item_chances = {
         'healing_potion': 40,
         'sword': from_dungeon_level([[5, 4]], dungeon_level),
-        'shield': from_dungeon_level([[15, 8]], dungeon_level),
+        'shield': from_dungeon_level([[15, 2]], dungeon_level),
         'lightning_scroll': from_dungeon_level([[25, 3], [35, 6]], dungeon_level),
         'fireball_scroll': from_dungeon_level([[25, 4], [35, 7]], dungeon_level),
         'confusion_scroll': from_dungeon_level([[30, 5]], dungeon_level)
