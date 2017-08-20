@@ -1,0 +1,9 @@
+﻿// One item per line
+// name(string), type(string) [amountToHeal(int)*] [stat(string)* effect(int)*]
+// You must include EITHER the amountToHeal or the stat+effect must be included. cannot do both
+// If the type is Health, it knows there will only be one field following it.
+// If the type is Stat, it knows to look for two fields after
+Health Potion, Health 20
+Health+ Potion, Health 40
+Strength Potion, Stat Strength 15
+Strength+ Potion, Stat Strength 25

@@ -1,0 +1,10 @@
+﻿// One monster per line
+// symbol(char) health(int) minimumRoom(int) color(hexstring) name(String) speed(int) attack(int)
+o 20 #FF00FF00 1 orc 500 10
+o 150 #FF006E21 3 orc(chieftain) 1000 20
+D 90 #FFFF0000 3 dragon 3000 35
+k 8 #FF0000FF 1 kobold 1500 15
+k 50 #FF4FF5F7 2 kobold(hardcore) 1000 25
+i 15 #FFBA020E 1 imp 200 3
+M 80 #FFCCD439 3 minotaur 5000 40
+: 10 #FFFFFFFF 3 puryed 5000 1
