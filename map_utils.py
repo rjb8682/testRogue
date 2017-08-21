@@ -59,10 +59,10 @@ def place_entities(game_map, room, entities, colors):
     number_of_items = randint(0, max_items_per_room)
 
     monster_chances = {
-        'orc': 80,
+        'orc': from_dungeon_level([[80, 1], [65, 4], [30, 8]], dungeon_level),
         'troll': from_dungeon_level([[15, 3], [30, 5], [60, 7]], dungeon_level),
-        'kobold': from_dungeon_level([[20, 3], [30, 5], [50, 7]], dungeon_level),
-        'golem': from_dungeon_level([[20, 5], [30, 8]], dungeon_level)
+        'kobold': from_dungeon_level([[10, 3], [20, 5], [50, 7]], dungeon_level),
+        'golem': from_dungeon_level([[20, 6], [30, 9]], dungeon_level)
     }
 
     item_chances = {
