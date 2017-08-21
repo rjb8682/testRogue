@@ -77,6 +77,22 @@ def character_screen(root_console, player, character_screen_width, character_scr
     window.draw_str(0, 7, 'Attack: {}'.format(player.fighter.power))
     window.draw_str(0, 8, 'Defense: {}'.format(player.fighter.defense))
 
+    if player.equipment.main_hand:
+        window.draw_str(0, 10, 'Main Hand: {} (+{}/+{}/+{})'.format(player.equipment.main_hand.name,
+                                                                    player.equipment.main_hand.equippable.power_bonus,
+                                                                    player.equipment.main_hand.equippable.defense_bonus,
+                                                                    player.equipment.main_hand.equippable.max_hp_bonus))
+    else:
+        window.draw_str(0, 10, 'Main Hand: Empty')
+
+    if player.equipment.off_hand:
+        window.draw_str(0, 11, 'Off Hand: {} (+{}/+{}/+{})'.format(player.equipment.off_hand.name,
+                                                                   player.equipment.off_hand.equippable.power_bonus,
+                                                                   player.equipment.off_hand.equippable.defense_bonus,
+                                                                   player.equipment.off_hand.equippable.max_hp_bonus))
+    else:
+        window.draw_str(0, 11, 'Off Hand: Empty')
+
     x = screen_width // 2 - character_screen_width // 2
     y = screen_height // 2 - character_screen_height // 2
     root_console.blit(window, x, y, character_screen_width, character_screen_height, 0, 0)

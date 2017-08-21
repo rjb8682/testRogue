@@ -108,7 +108,9 @@ def place_entities(game_map, room, entities, colors):
         x = randint(room.x1 + 1, room.x2 - 1)
         y = randint(room.y1 + 1, room.y2 - 1)
 
-        if not any([entity for entity in entities if entity.x == x and entity.y == y]) and game_map.walkable[x, y]:
+        same_location_entities = [entity for entity in entities if entity.x == x and entity.y == y]
+
+        if len(same_location_entities) == 0 and game_map.walkable[x, y]:
             item_choice = random_choice_from_dict(item_chances)
 
             if item_choice == 'healing_potion':

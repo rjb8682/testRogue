@@ -271,12 +271,14 @@ def play_game(player, entities, game_map, message_log, game_state, root_console,
                             break
                 else:
                     game_state = GameStates.PLAYERS_TURN
-    except:
+    except Exception as e:
         game_state = GameStates.PLAYERS_TURN
         save_game(player, entities, game_map, message_log, game_state)
         root_console.clear()
         con.clear()
         panel.clear()
+
+        print(e)
 
         return True
 
