@@ -57,9 +57,9 @@ def render_all(con, panel, entities, player, game_map, fov_recompute, root_conso
 
     if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
         if game_state == GameStates.SHOW_INVENTORY:
-            inventory_title = 'Press the key next to an item to use it, or Esc to cancel.\n'
+            inventory_title = 'Press the key next to an item to use it.\n'
         else:
-            inventory_title = 'Press the key next to an item to drop it, or Esc to cancel.\n'
+            inventory_title = 'Press the key next to an item to drop it.\n'
 
         inventory_menu(con, root_console, inventory_title, player, 50, screen_width, screen_height)
 
@@ -67,7 +67,7 @@ def render_all(con, panel, entities, player, game_map, fov_recompute, root_conso
         level_up_menu(con, root_console, 'Level Up! Choose a stat to raise:', player, 40, screen_width, screen_height)
 
     elif game_state == GameStates.CHARACTER_SCREEN:
-        character_screen(root_console, player, 35, 13, screen_width, screen_height)
+        character_screen(root_console, player, 35, 14, screen_width, screen_height)
 
     panel.clear(fg=colors.get('white'), bg=colors.get('black'))
 

@@ -6,19 +6,19 @@ def menu(con, root, header, options, width, screen_width, screen_height):
 
     header_wrapped = textwrap.wrap(header, width)
     header_height = len(header_wrapped)
-    height = len(options) + header_height
+    height = len(options) + header_height + 1
 
     window = tdl.Console(width, height)
     
-    window.draw_rect(0, 0, width, height, None, fg=(255, 255, 255), bg=None)
+    window.draw_rect(0, 0, width, height, None, fg=(255, 255, 255), bg=(20, 20, 20))
     for i, line in enumerate(header_wrapped):
-        window.draw_str(0, 0 + i, header_wrapped[i])
+        window.draw_str(0, 0 + i, header_wrapped[i], bg=(20, 20, 20))
 
-    y = header_height
+    y = header_height + 1
     letter_index = ord('a')
     for option_text in options:
         text = '({}) {}'.format(chr(letter_index), option_text)
-        window.draw_str(0, y, text, bg=None)
+        window.draw_str(0, y, text, bg=(20, 20, 20))
         y += 1
         letter_index += 1
 
@@ -69,29 +69,29 @@ def character_screen(root_console, player, character_screen_width, character_scr
 
     window.draw_rect(0, 0, character_screen_width, character_screen_height, None, fg=(255, 255, 255), bg=(20, 20, 20))
 
-    window.draw_str(1, 1, 'Character Information', fg=None, bg=(20, 20, 20))
-    window.draw_str(1, 2, 'Level: {}'.format(player.level.current_level), fg=None, bg=(20, 20, 20))
-    window.draw_str(1, 3, 'Experience: {}'.format(player.level.current_xp), fg=None, bg=(20, 20, 20))
-    window.draw_str(1, 4, 'Experience to Level: {}'.format(player.level.experience_to_next_level), fg=None, bg=(20, 20, 20))
-    window.draw_str(1, 6, 'Maximum HP: {}'.format(player.fighter.max_hp), fg=None, bg=(20, 20, 20))
-    window.draw_str(1, 7, 'Attack: {}'.format(player.fighter.power), fg=None, bg=(20, 20, 20))
-    window.draw_str(1, 8, 'Defense: {}'.format(player.fighter.defense), fg=None, bg=(20, 20, 20))
+    window.draw_str(1, 1, 'Character Information', bg=(20, 20, 20))
+    window.draw_str(1, 3, 'Level: {}'.format(player.level.current_level), bg=(20, 20, 20))
+    window.draw_str(1, 4, 'Experience: {}'.format(player.level.current_xp), bg=(20, 20, 20))
+    window.draw_str(1, 5, 'Experience to Level: {}'.format(player.level.experience_to_next_level), bg=(20, 20, 20))
+    window.draw_str(1, 7, 'Maximum HP: {}'.format(player.fighter.max_hp), bg=(20, 20, 20))
+    window.draw_str(1, 8, 'Attack: {}'.format(player.fighter.power), bg=(20, 20, 20))
+    window.draw_str(1, 9, 'Defense: {}'.format(player.fighter.defense), bg=(20, 20, 20))
 
     if player.equipment.main_hand:
-        window.draw_str(1, 10, 'Main Hand: {} (+{}/+{}/+{})'.format(player.equipment.main_hand.name,
+        window.draw_str(1, 11, 'Main Hand: {} (+{}/+{}/+{})'.format(player.equipment.main_hand.name,
                                                                     player.equipment.main_hand.equippable.power_bonus,
                                                                     player.equipment.main_hand.equippable.defense_bonus,
-                                                                    player.equipment.main_hand.equippable.max_hp_bonus), fg=None, bg=(20, 20, 20))
+                                                                    player.equipment.main_hand.equippable.max_hp_bonus), bg=(20, 20, 20))
     else:
-        window.draw_str(1, 10, 'Main Hand: Empty')
+        window.draw_str(1, 11, 'Main Hand: Empty')
 
     if player.equipment.off_hand:
-        window.draw_str(1, 11, 'Off Hand: {} (+{}/+{}/+{})'.format(player.equipment.off_hand.name,
+        window.draw_str(1, 12, 'Off Hand: {} (+{}/+{}/+{})'.format(player.equipment.off_hand.name,
                                                                    player.equipment.off_hand.equippable.power_bonus,
                                                                    player.equipment.off_hand.equippable.defense_bonus,
-                                                                   player.equipment.off_hand.equippable.max_hp_bonus), fg=None, bg=(20, 20, 20))
+                                                                   player.equipment.off_hand.equippable.max_hp_bonus), bg=(20, 20, 20))
     else:
-        window.draw_str(1, 11, 'Off Hand: Empty')
+        window.draw_str(1, 12, 'Off Hand: Empty')
 
     x = screen_width // 2 - character_screen_width // 2
     y = screen_height // 2 - character_screen_height // 2
