@@ -185,15 +185,15 @@ def place_equipment(game_map, rooms, entities, colors):
     dungeon_level = game_map.dungeon_level
 
     main_hand_equipment_chances = {
-        'short_sword': from_dungeon_level([[10, 3]], dungeon_level),
-        'broadsword': from_dungeon_level([[8, 5]], dungeon_level),
-        'battle_axe': from_dungeon_level([[5, 9]], dungeon_level)
+        'short_sword': from_dungeon_level([[10, 3], [0, 6]], dungeon_level),
+        'broadsword': from_dungeon_level([[8, 5], [0, 8]], dungeon_level),
+        'battle_axe': from_dungeon_level([[5, 9], [0, 12]], dungeon_level)
     }
 
     off_hand_equipment_chances = {
-        'wooden_shield': from_dungeon_level([[25, 2]], dungeon_level),
-        'iron_shield': from_dungeon_level([[15, 4]], dungeon_level),
-        'obsidian_shield': from_dungeon_level([[10, 8]], dungeon_level)
+        'wooden_shield': from_dungeon_level([[25, 2], [0, 5]], dungeon_level),
+        'iron_shield': from_dungeon_level([[15, 4], [0, 7]], dungeon_level),
+        'obsidian_shield': from_dungeon_level([[10, 8], [0, 11]], dungeon_level)
     }
 
     # Choose a random room not including the last one (that room has the stairs in it's center)
