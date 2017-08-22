@@ -28,7 +28,7 @@ class Rect:
     def center(self):
         center_x = int((self.x1 + self.x2) / 2)
         center_y = int((self.y1 + self.y2) / 2)
-        return (center_x, center_y)
+        return center_x, center_y
 
     def intersect(self, other):
         return (self.x1 <= other.x2 and self.x2 >= other.x1 and
@@ -67,8 +67,6 @@ def place_entities(game_map, room, entities, colors):
 
     item_chances = {
         'healing_potion': 40,
-        'sword': from_dungeon_level([[5, 4]], dungeon_level),
-        'shield': from_dungeon_level([[15, 2]], dungeon_level),
         'lightning_scroll': from_dungeon_level([[25, 3], [35, 6]], dungeon_level),
         'fireball_scroll': from_dungeon_level([[25, 4], [35, 7]], dungeon_level),
         'confusion_scroll': from_dungeon_level([[30, 5]], dungeon_level)
@@ -116,12 +114,6 @@ def place_entities(game_map, room, entities, colors):
             if item_choice == 'healing_potion':
                 item_component = Item(use_function=heal, amount=40)
                 item = Entity(x, y, '!', colors.get('bright_orange'), 'Healing Potion', render_order=RenderOrder.ITEM, item=item_component)
-            elif item_choice == 'sword':
-                equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=3)
-                item = Entity(x, y, '/', colors.get('sky'), 'Sword', equippable=equippable_component)
-            elif item_choice == 'shield':
-                equippable_component = Equippable(EquipmentSlots.OFF_HAND, defense_bonus=1)
-                item = Entity(x, y, '[', colors.get('darker_orange'), 'Shield', equippable=equippable_component)
             elif item_choice == 'fireball_scroll':
                 item_component = Item(use_function=cast_fireball, targeting=True,
                                       targeting_message=Message('Left-click a target tile for the fireball, or right-click to cancel.', colors.get('light_cyan')), damage=25, radius=3)
@@ -181,9 +173,66 @@ def make_map(game_map, max_rooms, room_min_size, room_max_size, map_width, map_h
             rooms.append(new_room)
             num_rooms += 1
 
+    place_equipment(game_map, rooms, entities, colors)
+    place_stairs(game_map, center_of_last_room_x, center_of_last_room_y, entities, colors)
+
+def place_stairs(game_map, last_room_x, last_room_y, entities, colors):
     stairs_component = Stairs(game_map.dungeon_level + 1)
-    down_stairs = Entity(center_of_last_room_x, center_of_last_room_y, '>', colors.get('white'), 'Stairs', render_order=RenderOrder.STAIRS, stairs=stairs_component)
+    down_stairs = Entity(last_room_x, last_room_y, '>', colors.get('white'), 'Stairs', render_order=RenderOrder.STAIRS, stairs=stairs_component)
     entities.append(down_stairs)
+
+def place_equipment(game_map, rooms, entities, colors):
+    dungeon_level = game_map.dungeon_level
+
+    main_hand_equipment_chances = {
+        'short_sword': from_dungeon_level([[10, 3]], dungeon_level),
+        'broadsword': from_dungeon_level([[8, 5]], dungeon_level),
+        'battle_axe': from_dungeon_level([[5, 9]], dungeon_level)
+    }
+
+    off_hand_equipment_chances = {
+        'wooden_shield': from_dungeon_level([[25, 2]], dungeon_level),
+        'iron_shield': from_dungeon_level([[15, 4]], dungeon_level),
+        'obsidian_shield': from_dungeon_level([[10, 8]], dungeon_level)
+    }
+
+    # Choose a random room not including the last one (that room has the stairs in it's center)
+    rand_room_1 = rooms[randint(0, len(rooms) - 2)]
+    room_1_center_x, room_1_center_y = rand_room_1.center()
+
+    rand_room_2 = [room for room in rooms if room != rand_room_1][randint(0, len(rooms) - 3)]
+    room_2_center_x, room_2_center_y = rand_room_2.center()
+
+    main_hand_choice = random_choice_from_dict(main_hand_equipment_chances)
+    off_hand_choice = random_choice_from_dict(off_hand_equipment_chances)
+
+    item = None
+    if main_hand_choice == 'short_sword':
+        equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=3)
+        item = Entity(room_1_center_x, room_1_center_y, '/', colors.get('sky'), 'Short Sword', equippable=equippable_component)
+    elif main_hand_choice == 'broadsword':
+        equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=6)
+        item = Entity(room_1_center_x, room_1_center_y, '!', colors.get('steel'), 'Broadsword', equippable=equippable_component)
+    elif main_hand_choice == 'battle_axe':
+        equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=9)
+        item = Entity(room_1_center_x, room_1_center_y, 'P', colors.get('wood'), 'Battle Axe', equippable=equippable_component)
+
+    if item:
+        entities.append(item)
+
+    item = None
+    if off_hand_choice == 'wooden_shield':
+        equippable_component = Equippable(EquipmentSlots.OFF_HAND, defense_bonus=1)
+        item = Entity(room_2_center_x, room_2_center_y, '[', colors.get('darker_orange'), 'Wooden Shield', equippable=equippable_component)
+    elif off_hand_choice == 'iron_shield':
+        equippable_component = Equippable(EquipmentSlots.OFF_HAND, defense_bonus=3)
+        item = Entity(room_2_center_x, room_2_center_y, '[', colors.get('light_gray'), 'Iron Shield', equippable=equippable_component)
+    elif off_hand_choice == 'obsidian_shield':
+        equippable_component = Equippable(EquipmentSlots.OFF_HAND, defense_bonus=7)
+        item = Entity(room_2_center_x, room_2_center_y, '|', colors.get('obsidian'), 'Obsidian Shield', equippable=equippable_component)
+
+    if item:
+        entities.append(item)
 
 def next_floor(player, message_log, dungeon_level, constants):
     game_map = GameMap(constants['map_width'], constants['map_height'], dungeon_level)

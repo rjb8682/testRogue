@@ -65,7 +65,11 @@ def get_constants():
         'light_yellow': (255, 255, 114),
         'light_violet': (184, 114, 255),
         'sky': (0, 191, 255),
-        'darker_orange': (127, 63, 0)
+        'darker_orange': (127, 63, 0),
+        'steel': (143, 151, 163),
+        'wood': (114, 94, 66),
+        'light_gray': (201, 201, 201),
+        'obsidian': (116, 89, 191)
     }
 
     constants = {
