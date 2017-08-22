@@ -12,7 +12,8 @@ from tcod import image_load
 import tdl
 
 def play_game(player, entities, game_map, message_log, game_state, root_console, con, panel, constants):
-    tdl.set_font('arial10x10.png', greyscale=True, altLayout=True)
+    #tdl.set_font('arial10x10.png', greyscale=True, altLayout=True)
+    tdl.set_font('arial12x12.png', greyscale=True, altLayout=True)
 
     fov_recompute = True
 
