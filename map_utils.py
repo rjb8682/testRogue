@@ -173,7 +173,7 @@ def make_map(game_map, max_rooms, room_min_size, room_max_size, map_width, map_h
             rooms.append(new_room)
             num_rooms += 1
 
-    place_equipment(game_map, rooms, entities, colors)
+    place_equipment(game_map, rooms[:-1], entities, colors)
     place_stairs(game_map, center_of_last_room_x, center_of_last_room_y, entities, colors)
 
 def place_stairs(game_map, last_room_x, last_room_y, entities, colors):
@@ -181,6 +181,11 @@ def place_stairs(game_map, last_room_x, last_room_y, entities, colors):
     down_stairs = Entity(last_room_x, last_room_y, '>', colors.get('white'), 'Stairs', render_order=RenderOrder.STAIRS, stairs=stairs_component)
     entities.append(down_stairs)
 
+"""
+    Expect the rooms param to come in as all the rooms MINUS THE LAST ONE.
+        This is because the last room has the stair entity in the center, thus we shouldn't place
+        another entity ontop of it.
+"""
 def place_equipment(game_map, rooms, entities, colors):
     dungeon_level = game_map.dungeon_level
 
@@ -197,10 +202,10 @@ def place_equipment(game_map, rooms, entities, colors):
     }
 
     # Choose a random room not including the last one (that room has the stairs in it's center)
-    rand_room_1 = rooms[randint(0, len(rooms) - 2)]
+    rand_room_1 = rooms[randint(0, len(rooms) -1)]
     room_1_center_x, room_1_center_y = rand_room_1.center()
 
-    rand_room_2 = [room for room in rooms if room != rand_room_1][randint(0, len(rooms) - 3)]
+    rand_room_2 = [room for room in rooms if room != rand_room_1][randint(0, len(rooms) - 2)]
     room_2_center_x, room_2_center_y = rand_room_2.center()
 
     main_hand_choice = random_choice_from_dict(main_hand_equipment_chances)
