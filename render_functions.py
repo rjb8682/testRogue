@@ -67,7 +67,7 @@ def render_all(con, panel, entities, player, game_map, fov_recompute, root_conso
         level_up_menu(con, root_console, 'Level Up! Choose a stat to raise:', player, 40, screen_width, screen_height)
 
     elif game_state == GameStates.CHARACTER_SCREEN:
-        character_screen(root_console, player, 30, 14, screen_width, screen_height)
+        character_screen(root_console, player, 35, 13, screen_width, screen_height)
 
     panel.clear(fg=colors.get('white'), bg=colors.get('black'))
 
